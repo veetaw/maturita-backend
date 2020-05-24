@@ -4,6 +4,7 @@
   "description": "pizzeria mama mia",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,13 @@
   "bugs": {
     "url": "https://github.com/veetaw/maturita-backend/issues"
   },
-  "homepage": "https://github.com/veetaw/maturita-backend#readme"
+  "homepage": "https://github.com/veetaw/maturita-backend#readme",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "sequelize": "^5.21.10",
+    "sqlite3": "^4.2.0"
+  }
 }
