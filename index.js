@@ -5,6 +5,8 @@ const Order = require('./models/order');
 const Owner = require('./models/owner');
 const Pizzeria = require('./models/pizzeria');
 
+const populate_db = require('./utils/populate_db');
+
 const config = require('./config');
 
 const sequelize = require('./db/db');
@@ -14,7 +16,10 @@ const morgan = require('morgan')
 
 
 // create all models {force: true} to delelete all before creating
-sequelize.sync();
+sequelize.sync({ logging: false, force: true })
+    // .then(_ => {
+    //     populate_db.populate_db();
+    // });
 
 const app = express();
 

@@ -51,6 +51,7 @@ exports.loginUser = (req, res) => {
                 const p = new Promise((resolve, reject) => {
                     jwt.sign(
                         {
+                            id: user.id,
                             firstName: user.firstName,
                             lastName: user.lastName,
                             email: user.email,
@@ -136,6 +137,7 @@ exports.loginOwner = (req, res) => {
                 const p = new Promise((resolve, reject) => {
                     jwt.sign(
                         {
+                            id: owner.id,
                             firstName: owner.firstName,
                             lastName: owner.lastName,
                             email: owner.email,
