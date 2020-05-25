@@ -16,7 +16,7 @@ const morgan = require('morgan')
 
 
 // create all models {force: true} to delelete all before creating
-sequelize.sync({ logging: false, force: true })
+sequelize.sync({ logging: false, force: false })
     // .then(_ => {
     //     populate_db.populate_db();
     // });
