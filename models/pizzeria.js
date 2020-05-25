@@ -5,7 +5,7 @@ const Opening = require('./opening');
 const Item = require('./item');
 
 class Pizzeria extends Model { }
-
+ 
 Pizzeria.init({
     id: {
         type: DataTypes.INTEGER,
@@ -32,8 +32,16 @@ Pizzeria.init({
     email: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+            isEmail: true,
+        }
     },
-}, { sequelize, modelName: 'pizzeria' });
+}, {
+    sequelize, modelName: 'pizzeria', name: {
+        singular: 'pizzeria',
+        plural: 'pizzerie'
+    }
+});
 
 Pizzeria.hasMany(Opening, { targetKey: 'id' });
 Pizzeria.hasMany(Item, { targetKey: 'id' });
