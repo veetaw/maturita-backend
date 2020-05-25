@@ -10,14 +10,19 @@ Opening.init({
         primaryKey: true
     },
     start: {
-        type: DataTypes.DATE,
+        type: DataTypes.TIME,
         allowNull: false,
     },
     end: {
-        type: DataTypes.DATE,
+        type: DataTypes.TIME,
         allowNull: false,
     },
-}, { sequelize, modelName: 'opening' });
+}, {
+    sequelize, modelName: 'opening', name: {
+        singular: 'opening',
+        plural: 'openings'
+    }
+});
 
 
 module.exports = Opening;
