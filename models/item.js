@@ -17,6 +17,11 @@ Item.init({
         type: DataTypes.FLOAT,
         allowNull: false,
     },
+    type: {
+        type: DataTypes.ENUM,
+        values: ['drink', 'pizza'],
+        allowNull: false,
+    }
 }, { sequelize, modelName: 'item' });
 
 
