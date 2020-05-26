@@ -1,7 +1,7 @@
-const Sequelize = require('sequelize');
-const config = require('../config');
+const Sequelize = require('sequelize')
+const config = require('../config')
 
 // TODO: prod use mysql
-const sequelize = new Sequelize('sqlite:db.sqlite');
+const sequelize = new Sequelize('sqlite:db.sqlite')
 
-module.exports = sequelize;
+module.exports = sequelize

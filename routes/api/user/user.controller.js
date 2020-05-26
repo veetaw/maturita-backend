@@ -1,11 +1,11 @@
-const Pizzeria = require('../../../models/pizzeria');
-const User = require('../../../models/user');
-const Order = require('../../../models/order');
-const Item = require('../../../models/item');
+const Pizzeria = require('../../../models/pizzeria')
+const User = require('../../../models/user')
+const Order = require('../../../models/order')
+const Item = require('../../../models/item')
 
 // send user infos
 exports.info = (req, res) => {
-    res.json(req.decoded);
+    res.json(req.decoded)
 }
 
 exports.pizzerie = (req, res) => {
@@ -13,7 +13,7 @@ exports.pizzerie = (req, res) => {
     const parse = (pizzerie) => {
 
         if (pizzerie == undefined || pizzerie === [])
-            return {};
+            return {}
         else
             return pizzerie.map(pizzeria => {
                 return {
@@ -25,42 +25,42 @@ exports.pizzerie = (req, res) => {
                     email: pizzeria.email,
                     owner_id: pizzeria.ownerId,
                 }
-            });
+            })
     }
 
     const respond = (_json) => {
         res.json({
             success: true,
             pizzerie: _json,
-        });
+        })
     }
 
-    const onError = (error) => {
+    const error = (error) => {
         res.json({
             success: false, message: error.message
-        });
+        })
     }
 
     Pizzeria.findAll()
         .then(parse)
         .then(respond)
-        .catch(onError);
+        .catch(error)
 }
 
 exports.pizzeria = (req, res) => {
-    const pizzeria_id = req.query.id;
+    const pizzeria_id = req.query.id
 
-    var currentPizzeria;
+    var currentPizzeria
 
     const parse = (pizzeria) => {
 
         if (pizzeria == undefined || pizzeria === {})
-            throw new Error('pizzeria not found');
+            throw new Error('pizzeria not found')
         else
-            currentPizzeria = pizzeria;
+            currentPizzeria = pizzeria
 
 
-        return pizzeria;
+        return pizzeria
     }
 
     const getMenu = (pizzeria) => {
@@ -72,12 +72,12 @@ exports.pizzeria = (req, res) => {
                             name: item.name,
                             price: item.price,
                             type: item.type,
-                        };
-                    }));
+                        }
+                    }))
                 })
-        });
+        })
 
-        return p;
+        return p
     }
 
 
@@ -94,75 +94,78 @@ exports.pizzeria = (req, res) => {
                 owner_id: currentPizzeria.ownerId,
                 menu: menu,
             },
-        });
+        })
     }
 
-    const onError = (error) => {
+    const error = (error) => {
         res.json({
             success: false,
             message: error.message
-        });
+        })
     }
 
     Pizzeria.findOne({ where: { id: pizzeria_id } })
         .then(parse)
         .then(getMenu)
         .then(respond)
-        .catch(onError);
+        .catch(error)
 }
 
 exports.orders = (req, res) => {
-    const user = req.decoded;
+    const user = req.decoded
 
-    const parse = (orders) => {
+    const parse = async (orders) => {
         if (orders == undefined || orders === []) {
             return {}
         } else {
-            return orders.map(order => {
-                return {
-                    id: order.id,
-                    start: order.start,
-                    shipped: order.shipped,
-                    delivered: order.delivered,
-                    total: order.total,
-                }
-            });
+            return Promise.all(orders.map(parseOrder))
         }
     }
 
-    const respond = (_json) => {
+    const parseOrder = async (order) => {
+        return {
+            id: order.id,
+            start: order.start,
+            shipped: order.shipped,
+            delivered: order.delivered,
+            total: await order.total,
+            items: await order.getItems()
+        }
+    }
+
+    const respond = async (_json) => {
         res.json({
             success: true,
             orders: _json,
-        });
+        })
     }
 
-    const onError = (error) => {
+    const error = (error) => {
         res.json({
             success: false,
             message: error.message
-        });
+        })
     }
 
     Order.findAll({ where: { userId: user.id } })
         .then(parse)
         .then(respond)
-        .catch(onError);
+        .catch(error)
 }
 
 exports.order = (req, res) => {
-    const { pizzeria_id, item_list } = req.body;
+    const { pizzeria_id, item_list } = req.body
 
-    var currentUser;
-    var currentPizzeria;
+    var currentUser
+    var currentPizzeria
 
     const getPizzeria = (user) => {
         if (user == undefined || user === {})
-            throw new Error('user not found');
-        currentUser = user;
+            throw new Error('user not defined')
+        currentUser = user
 
         if (pizzeria_id == undefined)
-            throw new Error('pizzeria id not specified');
+            throw new Error('pizzeria id not specified')
 
 
         const p = new Promise((resolve, reject) => {
@@ -171,16 +174,16 @@ exports.order = (req, res) => {
                     if (pizzeria == null || pizzeria === {})
                         reject(new Error('pizzeria not found'))
                     else
-                        resolve(pizzeria);
-                });
-        });
+                        resolve(pizzeria)
+                })
+        })
 
 
-        return p;
+        return p
     }
 
     const getItems = (pizzeria) => {
-        currentPizzeria = pizzeria;
+        currentPizzeria = pizzeria
 
         const p = new Promise((resolve, reject) => {
             Item.findAll({
@@ -189,12 +192,12 @@ exports.order = (req, res) => {
                 }
             }).then(items => {
                 if (items == null || items === [])
-                    reject(new Error('no items'));
-                resolve(items);
-            });
-        });
+                    reject(new Error('no items'))
+                resolve(items)
+            })
+        })
 
-        return p;
+        return p
     }
 
     const createOrder = (items) => {
@@ -202,9 +205,9 @@ exports.order = (req, res) => {
             Order.create({
                 start: new Date(),
             }).then(async (order) => {
-                order.setPizzeria(currentPizzeria);
-                order.setUser(currentUser);
-                await order.setItems(items);
+                order.setPizzeria(currentPizzeria)
+                order.setUser(currentUser)
+                await order.setItems(items)
 
                 resolve({
                     total: await order.total,
@@ -212,25 +215,25 @@ exports.order = (req, res) => {
                     delivered: order.delivered,
                     id: order.id,
                     start: order.start,
-                });
-            });
-        });
+                })
+            })
+        })
 
-        return p;
+        return p
     }
 
     const respond = (order) => {
         res.json({
             success: true,
             newOrder: order,
-        });
+        })
     }
 
-    const onError = (error) => {
+    const error = (error) => {
         res.json({
             success: false,
             message: error.message
-        });
+        })
     }
 
 
@@ -239,6 +242,42 @@ exports.order = (req, res) => {
         .then(getItems)
         .then(createOrder)
         .then(respond)
-        .catch(onError);
+        .catch(error)
 
+}
+
+exports.get_order = (req, res) => {
+    const order_id = req.query.id
+
+    const parseOrder = async (order) => {
+        if (!order || order === {})
+            throw new Error('order not found')
+        return {
+            id: order.id,
+            start: order.start,
+            shipped: order.shipped,
+            delivered: order.delivered,
+            total: await order.total,
+            items: await order.getItems()
+        }
+    }
+
+    const respond = async (_json) => {
+        res.json({
+            success: true,
+            order: _json,
+        })
+    }
+
+    const error = (error) => {
+        res.json({
+            success: false,
+            message: error.message
+        })
+    }
+
+    Order.findOne({ where: { userId: req.decoded.id, id: order_id } })
+        .then(parseOrder)
+        .then(respond)
+        .catch(error)
 }

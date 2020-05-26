@@ -1,5 +1,5 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../db/db');
+const { Model, DataTypes } = require('sequelize')
+const sequelize = require('../db/db')
 
 class Item extends Model { }
 
@@ -22,7 +22,7 @@ Item.init({
         values: ['drink', 'pizza'],
         allowNull: false,
     }
-}, { sequelize, modelName: 'item' });
+}, { sequelize, modelName: 'item' })
 
 
-module.exports = Item;
+module.exports = Item

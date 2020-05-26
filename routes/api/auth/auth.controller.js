@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken')
 
-const User = require('../../../models/user');
-const Owner = require('../../../models/owner');
-const config = require('../../../config');
+const User = require('../../../models/user')
+const Owner = require('../../../models/owner')
+const config = require('../../../config')
 
 exports.registerUser = (req, res) => {
-    const { firstName, lastName, email, phone, address, password } = req.body;
+    const { firstName, lastName, email, phone, address, password } = req.body
 
     const create = (user) => {
         if (user) {
@@ -18,34 +18,34 @@ exports.registerUser = (req, res) => {
                 address: address,
                 phone: phone,
                 password: User.encryptPassword(password)
-            });
+            })
         }
     }
 
     const respond = (user) => {
         res.json({
             success: true,
-        });
+        })
     }
 
-    const onError = (error) => {
+    const error = (error) => {
         res.status(409).json({
             success: false,
             message: error.message,
-        });
+        })
     }
 
     User.findOne({ where: { email: email } })
         .then(create)
         .then(respond)
-        .catch(onError);
+        .catch(error)
 }
 
 exports.loginUser = (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.body
 
     const check = (user) => {
-        if (!user) throw new Error("user not registered");
+        if (!user) throw new Error("user not registered")
         else {
             if (user.verifyPassword(password)) {
                 const p = new Promise((resolve, reject) => {
@@ -67,11 +67,11 @@ exports.loginUser = (req, res) => {
                             if (err) reject(err)
                             resolve(token)
                         }
-                    );
-                });
-                return p;
+                    )
+                })
+                return p
             } else {
-                throw new Error("Wrong password");
+                throw new Error("Wrong password")
             }
         }
     }
@@ -79,21 +79,21 @@ exports.loginUser = (req, res) => {
     const respond = (token) => {
         res.json({
             token
-        });
+        })
     }
 
     const handleError = (error) => {
-        res.status(403).json({ message: error.message });
+        res.status(403).json({ message: error.message })
     }
 
     User.findOne({ where: { email: email } })
         .then(check)
         .then(respond)
-        .catch(handleError);
+        .catch(handleError)
 }
 
 exports.registerOwner = (req, res) => {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body
 
     const create = (owner) => {
         if (owner) {
@@ -104,34 +104,34 @@ exports.registerOwner = (req, res) => {
                 lastName: lastName,
                 email: email,
                 password: Owner.encryptPassword(password)
-            });
+            })
         }
     }
 
     const respond = (owner) => {
         res.json({
             success: true,
-        });
+        })
     }
 
-    const onError = (error) => {
+    const error = (error) => {
         res.status(409).json({
             success: false,
             message: error.message,
-        });
+        })
     }
 
     Owner.findOne({ where: { email: email } })
         .then(create)
         .then(respond)
-        .catch(onError);
+        .catch(error)
 }
 
 exports.loginOwner = (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.body
 
     const check = (owner) => {
-        if (!owner) throw new Error("owner not registered");
+        if (!owner) throw new Error("owner not registered")
         else {
             if (owner.verifyPassword(password)) {
                 const p = new Promise((resolve, reject) => {
@@ -151,11 +151,11 @@ exports.loginOwner = (req, res) => {
                             if (err) reject(err)
                             resolve(token)
                         }
-                    );
-                });
-                return p;
+                    )
+                })
+                return p
             } else {
-                throw new Error("Wrong password");
+                throw new Error("Wrong password")
             }
         }
     }
@@ -163,17 +163,17 @@ exports.loginOwner = (req, res) => {
     const respond = (token) => {
         res.json({
             token
-        });
+        })
     }
 
     const handleError = (error) => {
-        res.status(403).json({ message: error.message });
+        res.status(403).json({ message: error.message })
     }
 
     Owner.findOne({ where: { email: email } })
         .then(check)
         .then(respond)
-        .catch(handleError);
+        .catch(handleError)
 }
 
 // test jwt

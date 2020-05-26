@@ -1,11 +1,12 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../db/db');
+const { Model, DataTypes } = require('sequelize')
+const sequelize = require('../db/db')
 
-const Opening = require('./opening');
-const Item = require('./item');
+const Opening = require('./opening')
+const Order = require('./order')
+const Item = require('./item')
 
 class Pizzeria extends Model { }
- 
+
 Pizzeria.init({
     id: {
         type: DataTypes.INTEGER,
@@ -41,9 +42,9 @@ Pizzeria.init({
         singular: 'pizzeria',
         plural: 'pizzerie'
     }
-});
+})
 
-Pizzeria.hasMany(Opening, { targetKey: 'id' });
-Pizzeria.hasMany(Item, { targetKey: 'id' });
+Pizzeria.hasMany(Opening, { targetKey: 'id' })
+Pizzeria.belongsToMany(Item, { through: 'pizzeria_menu', targetKey: 'id' })
 
-module.exports = Pizzeria;
+module.exports = Pizzeria

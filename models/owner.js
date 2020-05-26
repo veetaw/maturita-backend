@@ -1,15 +1,15 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../db/db');
-const config = require('../config');
-const crypto = require('crypto');
+const { Model, DataTypes } = require('sequelize')
+const sequelize = require('../db/db')
+const config = require('../config')
+const crypto = require('crypto')
 
-const Pizzeria = require('./pizzeria');
+const Pizzeria = require('./pizzeria')
 
 class Owner extends Model {
     static encryptPassword(password) {
         const encrypted_password = crypto.createHmac('sha1', config.token_secret)
             .update(password)
-            .digest('base64');
+            .digest('base64')
 
         return encrypted_password
     }
@@ -17,9 +17,9 @@ class Owner extends Model {
     verifyPassword(password) {
         const encrypted_password = crypto.createHmac('sha1', config.token_secret)
             .update(password)
-            .digest('base64');
+            .digest('base64')
 
-        return this.password === encrypted_password;
+        return this.password === encrypted_password
     }
 }
 
@@ -49,8 +49,8 @@ Owner.init({
         type: DataTypes.STRING,
         allowNull: false
     }
-}, { sequelize, modelName: 'owner' });
+}, { sequelize, modelName: 'owner' })
 
-Owner.hasOne(Pizzeria, { targetKey: 'id' });
+Owner.hasOne(Pizzeria, { targetKey: 'id' })
 
-module.exports = Owner;
+module.exports = Owner

@@ -1,13 +1,13 @@
-const { Model, DataTypes } = require('sequelize');
-const config = require('../config');
-const crypto = require('crypto');
-const sequelize = require('../db/db');
+const { Model, DataTypes } = require('sequelize')
+const config = require('../config')
+const crypto = require('crypto')
+const sequelize = require('../db/db')
 
 class User extends Model {
     static encryptPassword(password) {
         const encrypted_password = crypto.createHmac('sha1', config.token_secret)
             .update(password)
-            .digest('base64');
+            .digest('base64')
 
         return encrypted_password
     }
@@ -15,9 +15,9 @@ class User extends Model {
     verifyPassword(password) {
         const encrypted_password = crypto.createHmac('sha1', config.token_secret)
             .update(password)
-            .digest('base64');
+            .digest('base64')
 
-        return this.password === encrypted_password;
+        return this.password === encrypted_password
     }
 }
 
@@ -55,6 +55,6 @@ User.init({
         type: DataTypes.STRING,
         allowNull: false
     }
-}, { sequelize, modelName: 'user' });
+}, { sequelize, modelName: 'user' })
 
-module.exports = User;
+module.exports = User
