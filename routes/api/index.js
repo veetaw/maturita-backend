@@ -11,8 +11,11 @@ router.use('/user', authMiddleware)
 router.use('/user', typeChecker.userMiddleware)
 router.use('/user', user)
 
+// middleWare for authentication
 router.use('/owner', authMiddleware)
-router.use('/user', typeChecker.ownerMiddleware)
+// check that owner is an owner and not a simple user
+router.use('/owner', typeChecker.ownerMiddleware)
+// route owner
 router.use('/owner', owner)
 
 module.exports = router

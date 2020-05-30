@@ -175,11 +175,3 @@ exports.loginOwner = (req, res) => {
         .then(respond)
         .catch(handleError)
 }
-
-// test jwt
-exports.check = (req, res) => {
-    res.json({
-        success: true,
-        info: req.decoded
-    })
-}

@@ -8,7 +8,4 @@ router.post('/loginUser', controller.loginUser)
 router.post('/registerOwner', controller.registerOwner)
 router.post('/loginOwner', controller.loginOwner)
 
-router.use('/check', authMiddleware)
-router.get('/check', controller.check)
-
 module.exports = router

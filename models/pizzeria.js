@@ -2,7 +2,6 @@ const { Model, DataTypes } = require('sequelize')
 const sequelize = require('../db/db')
 
 const Opening = require('./opening')
-const Order = require('./order')
 const Item = require('./item')
 
 class Pizzeria extends Model { }

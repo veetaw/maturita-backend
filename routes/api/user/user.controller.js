@@ -65,7 +65,7 @@ exports.pizzeria = (req, res) => {
 
     const getMenu = (pizzeria) => {
         const p = new Promise((resolve, reject) => {
-            Item.findAll({ where: { pizzeriaId: pizzeria.id } })
+            pizzeria.getItems()
                 .then(items => {
                     resolve(items.map(item => {
                         return {
@@ -129,7 +129,8 @@ exports.orders = (req, res) => {
             shipped: order.shipped,
             delivered: order.delivered,
             total: await order.total,
-            items: await order.getItems()
+            items: await order.getItems(),
+            updatedAt: order.updatedAt
         }
     }
 
