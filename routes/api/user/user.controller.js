@@ -5,7 +5,13 @@ const Item = require('../../../models/item')
 
 // send user infos
 exports.info = (req, res) => {
-    res.json(req.decoded)
+    User.findOne({ where: { id: req.decoded.id } })
+        .then(user => {
+            if (user == undefined || user === {})
+                throw new Error('user not registered')
+            res.json(user)
+        })
+        .catch(error => res.json({ success: false, message: error.message }))
 }
 
 exports.pizzerie = (req, res) => {
@@ -24,6 +30,7 @@ exports.pizzerie = (req, res) => {
                     phone: pizzeria.phone,
                     email: pizzeria.email,
                     owner_id: pizzeria.ownerId,
+                    image: pizzeria.profile_picture
                 }
             })
     }

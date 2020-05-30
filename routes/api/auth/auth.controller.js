@@ -5,7 +5,7 @@ const Owner = require('../../../models/owner')
 const config = require('../../../config')
 
 exports.registerUser = (req, res) => {
-    const { firstName, lastName, email, phone, address, password } = req.body
+    const { firstName, lastName, email, phone, address, password, profile_picture } = req.body
 
     const create = (user) => {
         if (user) {
@@ -17,7 +17,8 @@ exports.registerUser = (req, res) => {
                 email: email,
                 address: address,
                 phone: phone,
-                password: User.encryptPassword(password)
+                password: User.encryptPassword(password),
+                profile_picture: profile_picture
             })
         }
     }

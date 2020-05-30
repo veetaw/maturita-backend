@@ -21,6 +21,9 @@ Item.init({
         type: DataTypes.ENUM,
         values: ['drink', 'pizza'],
         allowNull: false,
+    },
+    image: {
+        type: DataTypes.BLOB('long')
     }
 }, { sequelize, modelName: 'item' })
 

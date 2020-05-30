@@ -54,7 +54,17 @@ User.init({
     password: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    profile_picture: {
+        type: DataTypes.BLOB('long')
     }
 }, { sequelize, modelName: 'user' })
+
+User.prototype.toJSON = function () {
+    var values = Object.assign({}, this.get());
+
+    delete values.password;
+    return values;
+}
 
 module.exports = User

@@ -48,8 +48,18 @@ Owner.init({
     password: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    profile_picture: {
+        type: DataTypes.BLOB('long')
     }
 }, { sequelize, modelName: 'owner' })
+
+Owner.prototype.toJSON = function () {
+    var values = Object.assign({}, this.get());
+
+    delete values.password;
+    return values;
+}
 
 Owner.hasOne(Pizzeria, { targetKey: 'id' })
 

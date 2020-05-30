@@ -36,6 +36,9 @@ Pizzeria.init({
             isEmail: true,
         }
     },
+    profile_picture: {
+        type: DataTypes.BLOB('long')
+    }
 }, {
     sequelize, modelName: 'pizzeria', name: {
         singular: 'pizzeria',

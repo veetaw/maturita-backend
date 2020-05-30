@@ -6,13 +6,27 @@ const Order = require('../../../models/order')
 
 // send owner infos
 exports.info = (req, res) => {
-    res.json(req.decoded)
+    Owner.findOne({ where: { id: req.decoded.id } })
+        .then(owner => {
+            if (owner == undefined || owner === {})
+                throw new Error('owner not registered')
+            res.json(owner)
+        })
+        .catch(error => res.json({ success: false, message: error.message }))
 }
 
 exports.createPizzeria = (req, res) => {
     const { name, p_iva, address, phone, email } = req.body
 
-    var currentPizzeria
+    var currentOwner
+
+    const checkAlreadyExisting = (user) => {
+        if (user.pizzeria == undefined || user.pizzeria === {}) {
+            currentOwner = user
+            return user
+        }
+        else throw new Error('pizzeria already exists')
+    }
 
     const create = () => {
         const p = new Promise((resolve, reject) => {
@@ -30,23 +44,21 @@ exports.createPizzeria = (req, res) => {
     }
 
     const associate = (pizzeria) => {
-        currentPizzeria = pizzeria
         const p = new Promise((resolve, reject) => {
-            Owner.findOne({ where: { id: req.decoded.id } }).then(
-                owner => {
-                    owner.setPizzeria(pizzeria)
-                    resolve(owner)
-                }
-            ).catch(e => { reject(new Error("Error associating pizzeria, " + e.message)) })
+            currentOwner
+                .setPizzeria(pizzeria)
+                .then(resolve)
+                .catch(reject)
         })
 
         return p
     }
 
-    const respond = (_) => {
+    const respond = (pizzeria) => {
         res.json({
             success: true,
-            pizzeria: currentPizzeria,
+            owner: currentOwner,
+            pizzeria: pizzeria,
         })
     }
 
@@ -56,7 +68,9 @@ exports.createPizzeria = (req, res) => {
         })
     }
 
-    create()
+    Owner.findOne({ where: { id: req.decoded.id }, include: Pizzeria })
+        .then(checkAlreadyExisting)
+        .then(create)
         .then(associate)
         .then(respond)
         .catch(error)
@@ -67,7 +81,7 @@ exports.pizzeria = (req, res) => {
         const p = new Promise((resolve, reject) => {
             owner.getPizzeria().then(pizzeria => {
                 if (pizzeria === {} || pizzeria == undefined)
-                    resolve({})
+                    reject(new Error('no pizzeria associated'))
                 else
                     resolve({
                         id: pizzeria.id,
@@ -270,6 +284,7 @@ exports.addToMenu = (req, res) => {
                 name: _item.name,
                 price: _item.price,
                 type: _item.type,
+                image: _item.image
             }
         })
     }
@@ -290,7 +305,7 @@ exports.addToMenu = (req, res) => {
 }
 
 exports.createItem = (req, res) => {
-    const { name, price, type } = req.body
+    const { name, price, type, image } = req.body
 
     const respond = (item) => {
         res.json({
@@ -310,6 +325,7 @@ exports.createItem = (req, res) => {
         name: name,
         price: price,
         type: type,
+        image: image
     })
         .then(respond)
         .catch(error)
