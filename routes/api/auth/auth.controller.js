@@ -61,9 +61,7 @@ exports.loginUser = (req, res) => {
                             type: 'User',
                         },
                         config.token_secret,
-                        {
-                            expiresIn: '7d',
-                        },
+                        {},
                         (err, token) => {
                             if (err) reject(err)
                             resolve(token)
