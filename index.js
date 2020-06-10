@@ -18,7 +18,7 @@ const helmet = require('helmet');
 
 
 // create all models {force: true} to delelete all before creating
-sequelize.sync({ logging: false, force: false })
+sequelize.sync({ logging: config.env == 'dev', force: config.env == 'testing' })
     .then(_ => {
         const app = express()
         if (config.env == 'dev')
