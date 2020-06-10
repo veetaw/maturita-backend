@@ -14,17 +14,21 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
+const helmet = require('helmet');
 
 
 // create all models {force: true} to delelete all before creating
 sequelize.sync({ logging: false, force: false })
     .then(_ => {
         const app = express()
-        app.use(cors())
+        if (config.env == 'dev')
+            app.use(cors())
         app.use(bodyParser.urlencoded({ extended: false }))
         app.use(bodyParser.json())
         if (config.env == 'dev')
             app.use(morgan('dev'))
+        else
+            app.use(helmet())
 
         app.use('/api', require('./routes/api'))
 
